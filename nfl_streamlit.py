@@ -115,10 +115,11 @@ refresh_interval = 60  # Auto-refresh every 60 seconds
 if st.button(f"Refresh Now (auto-refresh every {refresh_interval} seconds)"):
     st.experimental_rerun()
 
-# Countdown timer for auto-refresh
-#for remaining_time in range(refresh_interval, 0, -1):
-#    st.write(f"Refreshing in {remaining_time} seconds...", end="\r")
-#    time.sleep(30)
+# Countdown timer for auto-refresh with 10-second intervals
+placeholder = st.empty()  # Placeholder to update the countdown without stacking
+for remaining_time in range(refresh_interval, 0, -10):
+    placeholder.write(f"Refreshing in {remaining_time} seconds...")
+    time.sleep(10)
 
 # Auto-refresh the app
 st.experimental_rerun()
