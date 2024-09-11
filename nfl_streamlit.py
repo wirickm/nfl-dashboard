@@ -105,7 +105,7 @@ This interactive dashboard tracks **real-time win probabilities** for NFL games.
 
 
 # Set up the automatic refresh after a certain interval (in seconds)
-refresh_interval = 60  # Auto-refresh every 60 seconds
+refresh_interval = 10  # Auto-refresh every 60 seconds
 
 # Countdown timer for auto-refresh with 1-second intervals
 placeholder = st.empty()  # Placeholder to update the countdown without stacking
@@ -114,4 +114,4 @@ for remaining_time in range(refresh_interval, 0, -1):
     time.sleep(1)
 
 # Trigger the refresh by updating the query parameters
-st.query_params
+st.experimental_set_query_params(rerun=str(time.time()))
