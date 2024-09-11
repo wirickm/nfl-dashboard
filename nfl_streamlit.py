@@ -103,6 +103,7 @@ st.markdown("""
 This interactive dashboard tracks **real-time win probabilities** for NFL games. Select a game from the dropdown menu to view the **possession-based win probabilities** (blue) and **defending team probabilities** (red) over time. The **green bars** indicate **Win Probability Added (WPA)** for each play. The favored team and their win probability are displayed at the top of the chart. This tool helps analyze how each play impacts a team's chances of winning throughout the game.
 """)
 
+
 # Set up the automatic refresh after a certain interval (in seconds)
 refresh_interval = 60  # Auto-refresh every 60 seconds
 
@@ -112,5 +113,5 @@ for remaining_time in range(refresh_interval, 0, -1):
     placeholder.write(f"Refreshing in {remaining_time} seconds...")
     time.sleep(1)
 
-# Auto-refresh the app every 60 seconds using st_autorefresh
-st_autorefresh(interval=60*1000, key="data_refresh")
+# Trigger the refresh by updating the query parameters
+st.experimental_set_query_params(rerun=str(time.time()))
