@@ -2,3 +2,4 @@ matplotlib
 requests
 pandas
 streamlit
+time
