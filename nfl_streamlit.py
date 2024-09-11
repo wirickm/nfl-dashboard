@@ -1,46 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 11 13:21:40 2024
-@author: wirickm
-"""
 
-import requests
-import pandas as pd
-import matplotlib.pyplot as plt
-import streamlit as st
-import time
-
-# Streamlit App Title
-st.title('NFL Win Probability Dashboard')
-
-# Download and load the data
-@st.cache_data
-def load_data():
-    github_api_url = 'https://api.github.com/repos/nflverse/nflverse-data/releases/latest'
-    response = requests.get(github_api_url)
-    data = response.json()
-
-    for asset in data['assets']:
-        if 'play_by_play_2024' in asset['name']:
-            download_url = asset['browser_download_url']
-            break
-
-    response = requests.get(download_url)
-    filename = asset['name']
-    with open(filename, 'wb') as f:
-        f.write(response.content)
-
-    if filename.endswith('.csv'):
-        return pd.read_csv(filename, low_memory=False)
-    elif filename.endswith('.parquet'):
-        return pd.read_parquet(filename)
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 11 13:21:40 2024
-
-@author: MichaelJWirickJr
-"""
 
 import requests
 import pandas as pd
@@ -78,8 +36,8 @@ while True:
     # Load the play-by-play data
     play_by_play_data = load_data()
 
-    # Select a game to visualize
-    game_id = st.selectbox('Select a Game ID', play_by_play_data['game_id'].unique())
+    # Use a unique key for the selectbox to avoid DuplicateWidgetID error
+    game_id = st.selectbox('Select a Game ID', play_by_play_data['game_id'].unique(), key="game_id_selectbox")
 
     # Filter relevant columns for win probability
     wp_columns = ['game_id', 'play_id', 'wp', 'def_wp', 'wpa', 'posteam', 'defteam']
