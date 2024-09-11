@@ -118,5 +118,5 @@ for remaining_time in range(refresh_interval, 0, -1):
     placeholder.write(f"Refreshing in {remaining_time} seconds...")
     time.sleep(1)
 
-# Auto-refresh the app
-st.experimental_rerun()
+# Trigger the refresh using query params instead of st.experimental_rerun()
+st.experimental_set_query_params(rerun=str(time.time()))
