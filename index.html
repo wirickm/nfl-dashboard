@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NFL Dashboard</title>
+  <script>
+    async function loadData() {
+      const response = await fetch('https://api.github.com/repos/nflverse/nflverse-data/releases/latest');
+      const data = await response.json();
+      document.getElementById('data').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</head>
+<body onload="loadData()">
+  <h1>NFL Play-by-Play Data</h1>
+  <pre id="data">Loading...</pre>
+</body>
+</html>
