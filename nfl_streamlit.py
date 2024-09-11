@@ -116,9 +116,9 @@ if st.button(f"Refresh Now (auto-refresh every {refresh_interval} seconds)"):
     st.experimental_rerun()
 
 # Countdown timer for auto-refresh
-for remaining_time in range(refresh_interval, 0, -1):
-    st.write(f"Refreshing in {remaining_time} seconds...", end="\r")
-    time.sleep(1)
+#for remaining_time in range(refresh_interval, 0, -1):
+#    st.write(f"Refreshing in {remaining_time} seconds...", end="\r")
+#    time.sleep(30)
 
 # Auto-refresh the app
 st.experimental_rerun()
