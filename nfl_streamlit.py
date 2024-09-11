@@ -112,5 +112,5 @@ for remaining_time in range(refresh_interval, 0, -1):
     placeholder.write(f"Refreshing in {remaining_time} seconds...")
     time.sleep(1)
 
-# Auto-refresh the app
-st.experimental_rerun()
+# Auto-refresh the app every 60 seconds using st_autorefresh
+st_autorefresh(interval=60*1000, key="data_refresh")
