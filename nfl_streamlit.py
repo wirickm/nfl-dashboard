@@ -8,6 +8,7 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
+import time
 
 # Streamlit App Title
 st.title('NFL Win Probability Dashboard')
@@ -107,3 +108,17 @@ st.markdown("""
 ### About this Dashboard
 This interactive dashboard tracks **real-time win probabilities** for NFL games. Select a game from the dropdown menu to view the **possession-based win probabilities** (blue) and **defending team probabilities** (red) over time. The **green bars** indicate **Win Probability Added (WPA)** for each play. The favored team and their win probability are displayed at the top of the chart. This tool helps analyze how each play impacts a team's chances of winning throughout the game.
 """)
+
+# Set up the automatic refresh after a certain interval
+refresh_interval = 60  # Auto-refresh every 60 seconds
+
+if st.button(f"Refresh Now (auto-refresh every {refresh_interval} seconds)"):
+    st.experimental_rerun()
+
+# Countdown timer for auto-refresh
+for remaining_time in range(refresh_interval, 0, -1):
+    st.write(f"Refreshing in {remaining_time} seconds...", end="\r")
+    time.sleep(1)
+
+# Auto-refresh the app
+st.experimental_rerun()
