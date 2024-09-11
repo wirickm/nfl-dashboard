@@ -114,4 +114,4 @@ for remaining_time in range(refresh_interval, 0, -1):
     time.sleep(1)
 
 # Trigger the refresh by updating the query parameters
-st.experimental_set_query_params(rerun=str(time.time()))
+st.query_params(rerun=str(time.time()))
