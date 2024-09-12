@@ -126,7 +126,7 @@ ax2.legend(loc='lower left', fontsize=10)
 ax2.grid(False)
 
 # Display the second plot in Streamlit
-st.pyplot(fig2)
+#st.pyplot(fig2)
 
 st.markdown("""
 ### About this Dashboard
