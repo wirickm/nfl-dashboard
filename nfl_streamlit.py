@@ -97,6 +97,9 @@ ax.grid(False)
 # Display the plot in Streamlit
 st.pyplot(fig)
 
+# Now, for the Vegas win probability plot
+fig2, ax2 = plt.subplots(figsize=(12, 6))
+
 # Plot 'vegas_wp' and 'vegas_home_wp' over the course of the game with thicker lines
 ax2.plot(game_data['play_id'], game_data['vegas_home_wp'], label='Vegas Home Team Win Probability', color='blue', linewidth=2)
 ax2.plot(game_data['play_id'], game_data['vegas_wp'], label='Vegas Away Team Win Probability', color='red', linestyle='--', linewidth=2)
