@@ -141,10 +141,4 @@ Objective = Loss Function + (sum of Regularization Terms)
 
 The **Loss Function** measures prediction errors, while **Regularization** helps prevent overfitting by keeping the model simple.
 """)
-```
 
-### How to Use:
-- Copy and paste this Python code block into your script.
-- It will create a Markdown section in your Streamlit app or any other Python environment supporting markdown.
-
-This setup should display the formulas and descriptions in a clean, readable format. Let me know if you need any more changes!
