@@ -97,9 +97,6 @@ ax.grid(False)
 # Display the plot in Streamlit
 st.pyplot(fig)
 
-Here’s the entire markdown wrapped in a Python code block, ready for you to copy and paste:
-
-
 st.markdown("""
 ### About this Dashboard
 This interactive dashboard tracks **real-time win probabilities** for NFL games. Select a game from the dropdown menu to view the **possession-based win probabilities** (blue) and **defending team probabilities** (red) over time. The **green bars** indicate **Win Probability Added (WPA)** for each play. The favored team and their win probability are displayed at the top of the chart. This tool helps analyze how each play impacts a team's chances of winning throughout the game.
