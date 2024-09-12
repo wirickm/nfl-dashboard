@@ -141,4 +141,3 @@ XGBoost aims to minimize an objective function, which consists of:
 XGBoost sequentially improves the model by building one tree at a time and reducing errors until the model is as accurate as possible.
 
 """)
-
