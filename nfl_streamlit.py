@@ -97,6 +97,9 @@ ax.grid(False)
 # Display the plot in Streamlit
 st.pyplot(fig)
 
+Here’s the entire markdown wrapped in a Python code block, ready for you to copy and paste:
+
+```python
 st.markdown("""
 ### About this Dashboard
 This interactive dashboard tracks **real-time win probabilities** for NFL games. Select a game from the dropdown menu to view the **possession-based win probabilities** (blue) and **defending team probabilities** (red) over time. The **green bars** indicate **Win Probability Added (WPA)** for each play. The favored team and their win probability are displayed at the top of the chart. This tool helps analyze how each play impacts a team's chances of winning throughout the game.
@@ -111,33 +114,37 @@ This interactive dashboard tracks **real-time win probabilities** for NFL games.
 
 WP is calculated based on historical NFL data, using patterns from past games to predict the outcome. The model updates in real-time, showing fans how the likelihood of each team winning changes as the game progresses.
 
-#### Formula:
-The exact formula for WP varies based on the statistical model, but it typically involves input variables such as:
-\[
-WP = f(\text{{score differential}}, \text{{time remaining}}, \text{{down}}, \text{{distance}}, \text{{yard line}}, \text{{possession}})
-\]
-Where \( f \) is a function that relates game context to win probability using historical data.
+#### Simplified Formula for WP:
+The formula for WP typically looks like:
+```
+WP = f(score differential, time remaining, down, distance, yard line, possession)
+```
 
 #### What is Win Probability Added (WPA)?
-**Win Probability Added (WPA)** measures how much each play changes a team's chances of winning. It shows the difference in win probability before and after a given play:
-\[
-WPA = WP_{\text{{after}}} - WP_{\text{{before}}}
-\]
-WPA highlights the most important plays in the game, showing how much impact a single play had on the team's overall chances of winning. Positive WPA means the play increased the team's win probability, while negative WPA means it reduced their chances.
+**Win Probability Added (WPA)** measures how much each play changes a team's chances of winning. It shows the difference in win probability before and after a play.
+
+#### Simplified Formula for WPA:
+```
+WPA = WP(after) - WP(before)
+```
+
+WPA highlights the most important plays in the game by showing how much impact a single play had on the team's chances of winning.
 
 #### What is XGBoost?
-**XGBoost (Extreme Gradient Boosting)** is a machine learning algorithm used for classification and regression tasks, often applied to sports analytics for predictive modeling. In the context of this dashboard, XGBoost may be used to improve the accuracy of win probability predictions by learning from a large number of game features.
+**XGBoost (Extreme Gradient Boosting)** is a machine learning algorithm often used for predicting outcomes. It works by creating decision trees that build on each other to improve accuracy. In sports analytics, XGBoost is valuable for improving predictions, such as win probabilities, by learning from game features.
 
-XGBoost works by creating a series of decision trees, where each tree focuses on correcting the errors made by the previous one. It combines all the trees’ results to make a stronger overall prediction. This technique can be highly effective in improving predictive models for sports outcomes.
+#### Simplified Formula for XGBoost:
+XGBoost aims to minimize an objective function, which typically looks like:
+```
+Objective = Loss Function + (sum of Regularization Terms)
+```
 
-#### Formula for XGBoost (Simplified):
-XGBoost aims to minimize an objective function, which consists of:
-\[
-\text{{Objective Function}} = \text{{Loss Function}} + \sum (\text{{Regularization Terms}})
-\]
-- The **Loss Function** measures how far off the prediction is from the actual result.
-- The **Regularization Terms** penalize model complexity to prevent overfitting.
-
-XGBoost sequentially improves the model by building one tree at a time and reducing errors until the model is as accurate as possible.
-
+The **Loss Function** measures prediction errors, while **Regularization** helps prevent overfitting by keeping the model simple.
 """)
+```
+
+### How to Use:
+- Copy and paste this Python code block into your script.
+- It will create a Markdown section in your Streamlit app or any other Python environment supporting markdown.
+
+This setup should display the formulas and descriptions in a clean, readable format. Let me know if you need any more changes!
