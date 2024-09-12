@@ -36,7 +36,7 @@ play_by_play_data = load_data()
 game_id = st.selectbox('Select a Game ID', play_by_play_data['game_id'].unique())
 
 # Filter relevant columns for win probability
-wp_columns = ['game_id', 'play_id', 'wp', 'def_wp', 'wpa', 'posteam', 'defteam']
+wp_columns = ['game_id', 'play_id', 'home_wp', 'away_wp', 'wpa', 'posteam', 'defteam']
 filtered_wp_data = play_by_play_data[wp_columns]
 
 # Filter the data for the selected game
@@ -46,32 +46,32 @@ game_data = filtered_wp_data[filtered_wp_data['game_id'] == game_id]
 game_data = game_data.sort_values(by='play_id')
 
 # Get the last play of the game to determine the final win probabilities
-final_wp = game_data['wp'].iloc[-1]
-final_def_wp = game_data['def_wp'].iloc[-1]
+final_home_wp = game_data['home_wp'].iloc[-1]
+final_away_wp = game_data['away_wp'].iloc[-1]
 posteam = game_data['posteam'].iloc[-1]
 defteam = game_data['defteam'].iloc[-1]
 
 # Determine which team is currently favored to win
-if final_wp > final_def_wp:
-    favored_team = posteam
-    favored_prob = final_wp
+if final_home_wp > final_away_wp:
+    favored_team = posteam  # Assuming the possessing team is the home team
+    favored_prob = final_home_wp
 else:
-    favored_team = defteam
-    favored_prob = final_def_wp
+    favored_team = defteam  # Assuming the defending team is the away team
+    favored_prob = final_away_wp
 
-# Plot the win probability for the possessing team ('wp') and defending team ('def_wp')
+# Plot the win probability for the home and away teams
 fig, ax = plt.subplots(figsize=(12, 6))
 
-# Plot 'wp' and 'def_wp' over the course of the game with thicker lines
-ax.plot(game_data['play_id'], game_data['wp'], label='Possessing Team Win Probability', color='blue', linewidth=2)
-ax.plot(game_data['play_id'], game_data['def_wp'], label='Defending Team Win Probability', color='red', linestyle='--', linewidth=2)
+# Plot 'home_wp' and 'away_wp' over the course of the game with thicker lines
+ax.plot(game_data['play_id'], game_data['home_wp'], label='Home Team Win Probability', color='blue', linewidth=2)
+ax.plot(game_data['play_id'], game_data['away_wp'], label='Away Team Win Probability', color='red', linestyle='--', linewidth=2)
 
 # Highlight the start and end win probabilities with thicker markers
-ax.scatter(game_data['play_id'].iloc[0], game_data['wp'].iloc[0], color='blue', label='Start of Game (WP)', zorder=5, s=100)
-ax.scatter(game_data['play_id'].iloc[-1], game_data['wp'].iloc[-1], color='blue', label='End of Game (WP)', zorder=5, s=100)
+ax.scatter(game_data['play_id'].iloc[0], game_data['home_wp'].iloc[0], color='blue', label='Start of Game (Home WP)', zorder=5, s=100)
+ax.scatter(game_data['play_id'].iloc[-1], game_data['home_wp'].iloc[-1], color='blue', label='End of Game (Home WP)', zorder=5, s=100)
 
-ax.scatter(game_data['play_id'].iloc[0], game_data['def_wp'].iloc[0], color='red', label='Start of Game (Def WP)', zorder=5, s=100)
-ax.scatter(game_data['play_id'].iloc[-1], game_data['def_wp'].iloc[-1], color='red', label='End of Game (Def WP)', zorder=5, s=100)
+ax.scatter(game_data['play_id'].iloc[0], game_data['away_wp'].iloc[0], color='red', label='Start of Game (Away WP)', zorder=5, s=100)
+ax.scatter(game_data['play_id'].iloc[-1], game_data['away_wp'].iloc[-1], color='red', label='End of Game (Away WP)', zorder=5, s=100)
 
 # Overlay the 'wpa' (win probability added) with larger, more visible bars
 ax.bar(game_data['play_id'], game_data['wpa'], label='Win Probability Added (WPA)', alpha=0.6, color='green', width=15)
