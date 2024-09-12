@@ -36,7 +36,7 @@ play_by_play_data = load_data()
 game_id = st.selectbox('Select a Game ID', play_by_play_data['game_id'].unique())
 
 # Filter relevant columns for win probability
-wp_columns = ['game_id', 'play_id', 'home_wp', 'away_wp', 'wpa', 'posteam', 'defteam']
+wp_columns = ['game_id', 'play_id', 'home_wp', 'away_wp', 'wpa', 'posteam', 'defteam', 'vegas_wp', 'vegas_home_wp', 'vegas_wpa']
 filtered_wp_data = play_by_play_data[wp_columns]
 
 # Filter the data for the selected game
@@ -96,6 +96,35 @@ ax.grid(False)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
+
+# Plot 'vegas_wp' and 'vegas_home_wp' over the course of the game with thicker lines
+ax2.plot(game_data['play_id'], game_data['vegas_home_wp'], label='Vegas Home Team Win Probability', color='blue', linewidth=2)
+ax2.plot(game_data['play_id'], game_data['vegas_wp'], label='Vegas Away Team Win Probability', color='red', linestyle='--', linewidth=2)
+
+# Highlight the start and end win probabilities with thicker markers
+ax2.scatter(game_data['play_id'].iloc[0], game_data['vegas_home_wp'].iloc[0], color='blue', label='Start of Game (Vegas Home WP)', zorder=5, s=100)
+ax2.scatter(game_data['play_id'].iloc[-1], game_data['vegas_home_wp'].iloc[-1], color='blue', label='End of Game (Vegas Home WP)', zorder=5, s=100)
+
+ax2.scatter(game_data['play_id'].iloc[0], game_data['vegas_wp'].iloc[0], color='red', label='Start of Game (Vegas Away WP)', zorder=5, s=100)
+ax2.scatter(game_data['play_id'].iloc[-1], game_data['vegas_wp'].iloc[-1], color='red', label='End of Game (Vegas Away WP)', zorder=5, s=100)
+
+# Overlay the 'vegas_wpa' (Vegas win probability added) with larger, more visible bars
+ax2.bar(game_data['play_id'], game_data['vegas_wpa'], label='Vegas Win Probability Added (Vegas WPA)', alpha=0.6, color='purple', width=15)
+
+# Customize the plot
+ax2.set_title(f'Vegas Win Probability and WPA Over Time for Game {game_id}', fontsize=14)
+ax2.set_xlabel('Play ID', fontsize=12)
+ax2.set_ylabel('Vegas Win Probability / WPA', fontsize=12)
+
+# Move the legend to the bottom left
+ax2.legend(loc='lower left', fontsize=10)
+
+# Remove the gridlines
+ax2.grid(False)
+
+# Display the second plot in Streamlit
+st.pyplot(fig2)
+
 
 st.markdown("""
 ### About this Dashboard
