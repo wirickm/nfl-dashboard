@@ -32,9 +32,15 @@ def load_data():
 # Load the play-by-play data
 play_by_play_data = load_data()
 
-# Select a game to visualize
-game_id = st.selectbox('Select a Game ID', play_by_play_data['game_id'].unique())
+# Step 1: Select the week using a selectbox
 selected_week = st.selectbox('Select a Week', play_by_play_data['week'].unique())
+
+# Step 2: Filter the data based on the selected week
+filtered_data_by_week = play_by_play_data[play_by_play_data['week'] == selected_week]
+
+# Step 3: Select a game from the filtered data
+game_id = st.selectbox('Select a Game ID', filtered_data_by_week['game_id'].unique(),
+                       format_func=lambda x: f"{filtered_data_by_week.loc[filtered_data_by_week['game_id'] == x, 'home_team'].values[0]} vs {filtered_data_by_week.loc[filtered_data_by_week['game_id'] == x, 'away_team'].values[0]}")
 
 # Filter relevant columns for win probability
 wp_columns = ['game_id', 'play_id', 'home_team', 'away_team','home_wp', 'away_wp', 'wpa', 'posteam', 'defteam', 'vegas_wp', 'vegas_home_wp', 'vegas_wpa']
