@@ -8,7 +8,7 @@ import time
 st.title('NFL Win Probability Dashboard')
 
 # Download and load the data
-@st.cache_data
+#@st.cache_data
 def load_data():
     github_api_url = 'https://api.github.com/repos/nflverse/nflverse-data/releases/latest'
     response = requests.get(github_api_url)
