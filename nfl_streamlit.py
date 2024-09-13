@@ -34,6 +34,7 @@ play_by_play_data = load_data()
 
 # Select a game to visualize
 game_id = st.selectbox('Select a Game ID', play_by_play_data['game_id'].unique())
+selected_week = st.selectbox('Select a Week', play_by_play_data['week'].unique())
 
 # Filter relevant columns for win probability
 wp_columns = ['game_id', 'play_id', 'home_team', 'away_team','home_wp', 'away_wp', 'wpa', 'posteam', 'defteam', 'vegas_wp', 'vegas_home_wp', 'vegas_wpa']
