@@ -2,25 +2,41 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
-import time
 
 # Streamlit App Title
 st.title('NFL Win Probability Dashboard')
 
 # Download and load the data
-#@st.cache_data
+@st.cache_data
 def load_data():
     github_api_url = 'https://api.github.com/repos/nflverse/nflverse-data/releases/latest'
-    response = requests.get(github_api_url)
-    data = response.json()
+    try:
+        response = requests.get(github_api_url)
+        response.raise_for_status()
+        data = response.json()
+    except requests.RequestException as e:
+        st.error(f"Failed to fetch release data: {e}")
+        return None
 
-    for asset in data['assets']:
+    download_url = None
+    filename = None
+    for asset in data.get('assets', []):
         if 'play_by_play_2024' in asset['name']:
             download_url = asset['browser_download_url']
+            filename = asset['name']
             break
 
-    response = requests.get(download_url)
-    filename = asset['name']
+    if download_url is None:
+        st.error("Could not find play_by_play_2024 asset in the latest release.")
+        return None
+
+    try:
+        response = requests.get(download_url)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        st.error(f"Failed to download data: {e}")
+        return None
+
     with open(filename, 'wb') as f:
         f.write(response.content)
 
@@ -32,25 +48,43 @@ def load_data():
 # Load the play-by-play data
 play_by_play_data = load_data()
 
+if play_by_play_data is None:
+    st.stop()
+
 # Step 1: Select the week using a selectbox
 selected_week = st.selectbox('Select a Week', play_by_play_data['week'].unique())
 
 # Step 2: Filter the data based on the selected week
 filtered_data_by_week = play_by_play_data[play_by_play_data['week'] == selected_week]
 
-# Step 3: Select a game from the filtered data
-game_id = st.selectbox('Select a Game ID', filtered_data_by_week['game_id'].unique(),
-                       format_func=lambda x: f"{filtered_data_by_week.loc[filtered_data_by_week['game_id'] == x, 'home_team'].values[0]} vs {filtered_data_by_week.loc[filtered_data_by_week['game_id'] == x, 'away_team'].values[0]}")
+# Step 3: Build game label mapping and select a game
+game_labels = {}
+for gid in filtered_data_by_week['game_id'].unique():
+    game_rows = filtered_data_by_week[filtered_data_by_week['game_id'] == gid]
+    if not game_rows.empty:
+        home = game_rows['home_team'].iloc[0]
+        away = game_rows['away_team'].iloc[0]
+        game_labels[gid] = f"{home} vs {away}"
+    else:
+        game_labels[gid] = gid
+
+game_id = st.selectbox('Select a Game ID', list(game_labels.keys()),
+                       format_func=lambda x: game_labels[x])
 
 # Filter relevant columns for win probability
-wp_columns = ['game_id', 'play_id', 'home_team', 'away_team','home_wp', 'away_wp', 'wpa', 'posteam', 'defteam', 'vegas_wp', 'vegas_home_wp', 'vegas_wpa']
-filtered_wp_data = play_by_play_data[wp_columns]
+wp_columns = ['game_id', 'play_id', 'home_team', 'away_team', 'home_wp', 'away_wp', 'wpa', 'posteam', 'defteam', 'vegas_wp', 'vegas_home_wp', 'vegas_wpa']
+available_columns = [col for col in wp_columns if col in play_by_play_data.columns]
+filtered_wp_data = play_by_play_data[available_columns]
 
 # Filter the data for the selected game
 game_data = filtered_wp_data[filtered_wp_data['game_id'] == game_id]
 
 # Sort the game data by play_id to ensure chronological order
 game_data = game_data.sort_values(by='play_id')
+
+if game_data.empty:
+    st.warning("No data available for the selected game.")
+    st.stop()
 
 # Get the last play of the game to determine the final win probabilities
 final_home_wp = game_data['home_wp'].iloc[-1]
@@ -133,7 +167,7 @@ ax2.legend(loc='lower left', fontsize=10)
 ax2.grid(False)
 
 # Display the second plot in Streamlit
-#st.pyplot(fig2)
+st.pyplot(fig2)
 
 st.markdown("""
 ### About this Dashboard
@@ -176,4 +210,3 @@ Objective = Loss Function + (sum of Regularization Terms)
 
 The **Loss Function** measures prediction errors, while **Regularization** helps prevent overfitting by keeping the model simple.
 """)
-#
