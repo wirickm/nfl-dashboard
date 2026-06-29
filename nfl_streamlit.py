@@ -8,7 +8,7 @@ import time
 st.title('NFL Win Probability Dashboard')
 
 # Download and load the data
-#@st.cache_data
+@st.cache_data
 def load_data():
     github_api_url = 'https://api.github.com/repos/nflverse/nflverse-data/releases/latest'
     response = requests.get(github_api_url)
@@ -18,6 +18,9 @@ def load_data():
         if 'play_by_play_2024' in asset['name']:
             download_url = asset['browser_download_url']
             break
+
+    if 'download_url' not in locals():
+        raise RuntimeError("Could not find play_by_play_2024 asset in nflverse release")
 
     response = requests.get(download_url)
     filename = asset['name']
@@ -90,7 +93,7 @@ ax.set_ylabel('Win Probability / WPA', fontsize=12)
 
 # Annotate the currently favored team and their win probability at the top left
 ax.annotate(
-    f'Favored Team: {favored_team}\nWin Probability: {favored_prob:.2%}', 
+    f'Favored Team: {favored_team}\nWin Probability: {favored_prob:.2%}',
     xy=(0.02, 0.90), xycoords='axes fraction', fontsize=12,
     bbox=dict(facecolor='white', alpha=0.6, edgecolor='black')
 )
@@ -103,37 +106,6 @@ ax.grid(False)
 
 # Display the plot in Streamlit
 st.pyplot(fig)
-
-# Now, for the Vegas win probability plot
-fig2, ax2 = plt.subplots(figsize=(12, 6))
-
-# Plot 'vegas_wp' and 'vegas_home_wp' over the course of the game with thicker lines
-ax2.plot(game_data['play_id'], game_data['vegas_home_wp'], label='Vegas Home Team Win Probability', color='blue', linewidth=2)
-ax2.plot(game_data['play_id'], game_data['vegas_wp'], label='Vegas Away Team Win Probability', color='red', linestyle='--', linewidth=2)
-
-# Highlight the start and end win probabilities with thicker markers
-ax2.scatter(game_data['play_id'].iloc[0], game_data['vegas_home_wp'].iloc[0], color='blue', label='Start of Game (Vegas Home WP)', zorder=5, s=100)
-ax2.scatter(game_data['play_id'].iloc[-1], game_data['vegas_home_wp'].iloc[-1], color='blue', label='End of Game (Vegas Home WP)', zorder=5, s=100)
-
-ax2.scatter(game_data['play_id'].iloc[0], game_data['vegas_wp'].iloc[0], color='red', label='Start of Game (Vegas Away WP)', zorder=5, s=100)
-ax2.scatter(game_data['play_id'].iloc[-1], game_data['vegas_wp'].iloc[-1], color='red', label='End of Game (Vegas Away WP)', zorder=5, s=100)
-
-# Overlay the 'vegas_wpa' (Vegas win probability added) with larger, more visible bars
-ax2.bar(game_data['play_id'], game_data['vegas_wpa'], label='Vegas Win Probability Added (Vegas WPA)', alpha=0.6, color='purple', width=15)
-
-# Customize the plot
-ax2.set_title(f'Vegas Win Probability and WPA Over Time for Game {game_id}', fontsize=14)
-ax2.set_xlabel('Play ID', fontsize=12)
-ax2.set_ylabel('Vegas Win Probability / WPA', fontsize=12)
-
-# Move the legend to the bottom left
-ax2.legend(loc='lower left', fontsize=10)
-
-# Remove the gridlines
-ax2.grid(False)
-
-# Display the second plot in Streamlit
-#st.pyplot(fig2)
 
 st.markdown("""
 ### About this Dashboard
