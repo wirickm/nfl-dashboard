@@ -1,4 +1,5 @@
 matplotlib
 requests
 pandas
+pyarrow
 streamlit

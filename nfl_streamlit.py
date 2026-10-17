@@ -2,41 +2,27 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
-import time
 
 # Streamlit App Title
 st.title('NFL Win Probability Dashboard')
 
-# Download and load the data
+# Season picker (nflverse publishes play-by-play from 1999 onward)
+selected_season = st.selectbox('Select a Season', list(range(2025, 1998, -1)))
+
+# Download and load the data from the nflverse "pbp" release
 @st.cache_data
-def load_data():
-    github_api_url = 'https://api.github.com/repos/nflverse/nflverse-data/releases/latest'
-    response = requests.get(github_api_url)
-    data = response.json()
+def load_data(season):
+    url = f'https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.parquet'
+    return pd.read_parquet(url)
 
-    for asset in data['assets']:
-        if 'play_by_play_2024' in asset['name']:
-            download_url = asset['browser_download_url']
-            break
-
-    if 'download_url' not in locals():
-        raise RuntimeError("Could not find play_by_play_2024 asset in nflverse release")
-
-    response = requests.get(download_url)
-    filename = asset['name']
-    with open(filename, 'wb') as f:
-        f.write(response.content)
-
-    if filename.endswith('.csv'):
-        return pd.read_csv(filename, low_memory=False)
-    elif filename.endswith('.parquet'):
-        return pd.read_parquet(filename)
-
-# Load the play-by-play data
-play_by_play_data = load_data()
+try:
+    play_by_play_data = load_data(selected_season)
+except Exception as e:
+    st.error(f"Could not load play-by-play data for {selected_season}: {e}")
+    st.stop()
 
 # Step 1: Select the week using a selectbox
-selected_week = st.selectbox('Select a Week', play_by_play_data['week'].unique())
+selected_week = st.selectbox('Select a Week', sorted(play_by_play_data['week'].dropna().unique()))
 
 # Step 2: Filter the data based on the selected week
 filtered_data_by_week = play_by_play_data[play_by_play_data['week'] == selected_week]
@@ -53,7 +39,7 @@ filtered_wp_data = play_by_play_data[wp_columns]
 game_data = filtered_wp_data[filtered_wp_data['game_id'] == game_id]
 
 # Sort the game data by play_id to ensure chronological order
-game_data = game_data.sort_values(by='play_id')
+game_data = game_data.dropna(subset=['home_wp', 'away_wp']).sort_values(by='play_id')
 
 # Get the last play of the game to determine the final win probabilities
 final_home_wp = game_data['home_wp'].iloc[-1]
@@ -73,8 +59,8 @@ else:
 fig, ax = plt.subplots(figsize=(12, 6))
 
 # Plot 'home_wp' and 'away_wp' over the course of the game with thicker lines
-ax.plot(game_data['play_id'], game_data['home_wp'], label='Home Team Win Probability', color='blue', linewidth=2)
-ax.plot(game_data['play_id'], game_data['away_wp'], label='Away Team Win Probability', color='red', linestyle='--', linewidth=2)
+ax.plot(game_data['play_id'], game_data['home_wp'], label=f'{home_team} (Home) Win Probability', color='blue', linewidth=2)
+ax.plot(game_data['play_id'], game_data['away_wp'], label=f'{away_team} (Away) Win Probability', color='red', linestyle='--', linewidth=2)
 
 # Highlight the start and end win probabilities with thicker markers
 ax.scatter(game_data['play_id'].iloc[0], game_data['home_wp'].iloc[0], color='blue', label='Start of Game (Home WP)', zorder=5, s=100)

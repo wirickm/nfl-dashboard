@@ -16,4 +16,4 @@ Start the dashboard:
 streamlit run nfl_streamlit.py
 ```
 
-> **Note:** The season is hardcoded to 2024. Play-by-play data is downloaded automatically from the [nflverse](https://github.com/nflverse/nflverse-data) releases on first run.
+> **Note:** Pick a season (1999 to 2025) in the app. Play-by-play data is streamed from the [nflverse](https://github.com/nflverse/nflverse-data) `pbp` release and cached per season.
